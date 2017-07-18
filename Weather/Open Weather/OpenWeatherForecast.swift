@@ -22,18 +22,28 @@ enum OpenWeatherForecastErrorCodes: Int
     case noData
 }
 
+// MARK: - OpenWeatherForecastUnit Enum
+enum OpenWeatherForecastUnit
+{
+    case kelvin
+    case celcius
+    case fahrenheit
+}
+
 // MARK: - OpenWeatherForecastCriteria Struct
 struct OpenWeatherForecastCriteria
 {
     let latitude: Double
     let longitude: Double
+    let units: OpenWeatherForecastUnit
     let count: Int
     
-    init(latitude: Double, longitude: Double, count: Int)
+    init(latitude: Double, longitude: Double, units: OpenWeatherForecastUnit, count: Int)
     {
         self.latitude = latitude
         self.longitude = longitude
         self.count = count
+        self.units = units
     }
 }
 
@@ -45,10 +55,17 @@ class OpenWeatherForecast: OpenWeatherOperationRequestor, OpenWeatherOperationPr
     
     init(searchCriteria: OpenWeatherForecastCriteria, resultsHandler: OpenWeatherForecastResultsProcessor)
     {
+        let unit: String
+        switch searchCriteria.units {
+        case .celcius:      unit = "metric"
+        case .fahrenheit:   unit = "imperial"
+        case .kelvin:       unit = ""
+        }
         let parameters: [String: Any] = [
             "lat": searchCriteria.latitude as NSNumber,
             "lon": searchCriteria.longitude as NSNumber,
-            "cnt": searchCriteria.count as NSNumber
+            "cnt": searchCriteria.count as NSNumber,
+            "units": unit
         ]
         _request = URLRequest(url: OpenWeatherURL(method: "forecast/daily", parameters: parameters).url as URL)
         self.resultsHandler = resultsHandler

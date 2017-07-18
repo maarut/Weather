@@ -23,6 +23,7 @@ struct WeatherItem
     static let windSpeedKey = "speed"
     static let windDirectionKey = "deg"
     static let weatherKey = "weather"
+    static let dateKey = "dt"
     
     let temperatures: Temperatures
     let pressure: Double
@@ -30,6 +31,7 @@ struct WeatherItem
     let windSpeed: Double
     let windDirection: Double
     let weather: WeatherDescription
+    let date: Int
     
     init?(json: [String: AnyObject]) throws
     {
@@ -57,11 +59,15 @@ struct WeatherItem
         guard let weather = json[WeatherItem.weatherKey] as? [[String: AnyObject]] else {
             throw makeError("Key \(WeatherItem.weatherKey) not found.", code: .keyNotFound)
         }
+        guard let date = json[WeatherItem.dateKey] as? Int else {
+            throw makeError("Key \(WeatherItem.dateKey) not found.", code: .keyNotFound)
+        }
         
         self.pressure = pressure
         self.humidity = humidity
         self.windSpeed = windSpeed
         self.windDirection = windDirection
+        self.date = date
         do { self.temperatures = try Temperatures(json: temperatures)! }
         catch let error as NSError {
             let userInfo: [String: AnyObject] =
