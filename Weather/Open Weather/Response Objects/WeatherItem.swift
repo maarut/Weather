@@ -31,7 +31,7 @@ struct WeatherItem
     let windSpeed: Double
     let windDirection: Double
     let weather: WeatherDescription
-    let date: Int
+    let date: Date
     
     init?(json: [String: AnyObject]) throws
     {
@@ -59,7 +59,7 @@ struct WeatherItem
         guard let weather = json[WeatherItem.weatherKey] as? [[String: AnyObject]] else {
             throw makeError("Key \(WeatherItem.weatherKey) not found.", code: .keyNotFound)
         }
-        guard let date = json[WeatherItem.dateKey] as? Int else {
+        guard let date = json[WeatherItem.dateKey] as? TimeInterval else {
             throw makeError("Key \(WeatherItem.dateKey) not found.", code: .keyNotFound)
         }
         
@@ -67,7 +67,7 @@ struct WeatherItem
         self.humidity = humidity
         self.windSpeed = windSpeed
         self.windDirection = windDirection
-        self.date = date
+        self.date = Date(timeIntervalSince1970: date)
         do { self.temperatures = try Temperatures(json: temperatures)! }
         catch let error as NSError {
             let userInfo: [String: AnyObject] =

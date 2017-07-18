@@ -18,10 +18,13 @@ class MainViewController: UIViewController
     var location: CLLocationCoordinate2D!
     fileprivate let locationManager = CLLocationManager()
     fileprivate var currentForecast: Forecast!
+    fileprivate var dateFormatter: DateFormatter!
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale.current
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
         checkLocationServices()
@@ -78,24 +81,18 @@ extension MainViewController: UICollectionViewDataSource
 {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        return currentForecast?.weatherList.count ?? 10
+        return currentForecast?.weatherList.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let view = collectionView.dequeueReusableCell(withReuseIdentifier: "daily", for: indexPath)
         if let dateLabel = view.viewWithTag(2) as? UILabel {
-            dateLabel.text = "\(indexPath)"
+            dateLabel.text = stringFormat(for: currentForecast.weatherList[indexPath.row].date,
+                includeDayOfMonth: indexPath.row > 6)
         }
         view.layer.borderColor = UIColor.blue.cgColor
         view.layer.borderWidth = 1.0
-//        if let imageView = view.viewWithTag(1) as? UIImageView,
-//            let imageData = allFlashCards.fetchedObjects?[indexPath.row].image {
-//            imageView.image = UIImage(data: imageData as Data)
-//        }
-//        view.layer.borderColor = UIColor.green.cgColor
-//        view.contentView.isHidden = indexPath == selectedCell
-//        if isEditing { view.startWobbling() }
         return view
     }
 }
@@ -126,6 +123,25 @@ extension MainViewController: OpenWeatherForecastResultsProcessor
 // MARK: - Private Functions
 private extension MainViewController
 {
+    func stringFormat(for date: Date, includeDayOfMonth: Bool = false) -> String
+    {
+        if includeDayOfMonth {
+            dateFormatter.dateFormat = "ccc dd"
+            let dateString = dateFormatter.string(from: date)
+            let dayOfWeek = Calendar.current.component(.day, from: date)
+            switch dayOfWeek % 10 {
+            case 1:     return dateString + "st"
+            case 2:     return dateString + "nd"
+            case 3:     return dateString + "rd"
+            default:    return dateString + "th"
+            }
+        }
+        else {
+            dateFormatter.dateFormat = "ccc"
+            return dateFormatter.string(from: date)
+        }
+    }
+    
     func authoriseLocationServices()
     {
         switch CLLocationManager.authorizationStatus()
