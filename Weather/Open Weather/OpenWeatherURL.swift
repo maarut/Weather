@@ -14,7 +14,7 @@ class OpenWeatherURL
     
     init(method: String, parameters: [String: Any])
     {
-        let url = NSURLComponents()
+        var url = URLComponents()
         url.scheme = OpenWeatherConstants.API.Scheme
         url.host = OpenWeatherConstants.API.Host
         url.path = "\(OpenWeatherConstants.API.Path)/\(method)"

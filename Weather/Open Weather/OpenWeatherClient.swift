@@ -23,4 +23,11 @@ class OpenWeatherClient
         let networkOp = OpenWeatherOperation(processor: operation, requestor: operation)
         networkOperationQueue.addOperation(networkOp)
     }
+    
+    func downloadIcon(crieria: OpenWeatherIconDownloaderCriteria, resultsProcessor: OpenWeatherIconProcessor)
+    {
+        let operation = OpenWeatherIconDownloader(criteria: crieria, resultsHandler: resultsProcessor)
+        let networkOp = OpenWeatherOperation(processor: operation, requestor: operation)
+        networkOperationQueue.addOperation(networkOp)
+    }
 }
