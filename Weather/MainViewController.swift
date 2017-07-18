@@ -9,11 +9,20 @@
 import UIKit
 import CoreLocation
 
+private let kphToMphFactor = 0.6213711922
+
 class MainViewController: UIViewController
 {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var minTemp: UILabel!
+    @IBOutlet weak var maxTemp: UILabel!
+    @IBOutlet weak var pressure: UILabel!
+    @IBOutlet weak var humidity: UILabel!
+    @IBOutlet weak var windSpeed: UILabel!
+    @IBOutlet weak var windDirection: UILabel!
     
     var location: CLLocationCoordinate2D!
     var dataController: DataController!
@@ -109,6 +118,54 @@ extension MainViewController: UICollectionViewDataSource
 // MARK: - UICollectionViewDelegate Implementation
 extension MainViewController: UICollectionViewDelegate
 {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        let weatherInfo = currentForecast.weatherList[indexPath.row]
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .none
+        let speed = weatherInfo.windSpeed * 3600 * kphToMphFactor / 1000
+        let minTemp = weatherInfo.temperatures.min
+        let maxTemp = weatherInfo.temperatures.max
+        let pressure = weatherInfo.pressure
+        let humidity = weatherInfo.humidity
+        let windDirection = weatherInfo.windDirection
+        descriptionLabel.text = weatherInfo.weather.description
+        self.minTemp.text = "\(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") ℃"
+        self.maxTemp.text = "\(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") ℃"
+        self.pressure.text = "\(numberFormatter.string(from: pressure as NSNumber) ?? "\(pressure)") mbar"
+        self.humidity.text = "\(numberFormatter.string(from: humidity as NSNumber) ?? "\(humidity)")%"
+        self.windSpeed.text = "\(numberFormatter.string(from: speed as NSNumber) ?? "\(speed)") mph"
+        self.windDirection.text = "\(numberFormatter.string(from: windDirection as NSNumber) ?? "\(windDirection)") °"
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
+    {
+        scrollView.panGestureRecognizer.addTarget(self, action: #selector(panned(_:)))
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
+    {
+        scrollView.panGestureRecognizer.removeTarget(self, action: #selector(panned(_:)))
+        resetLabels()
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
+    {
+        resetLabels()
+    }
+    
+    
+}
+
+// MARK: - UIGestureRecogniser Handler
+private extension MainViewController
+{
+    dynamic func panned(_ gestureRecogniser: UIPanGestureRecognizer)
+    {
+        if abs(gestureRecogniser.translation(in: collectionView).x) > 75 {
+            resetLabels()
+        }
+    }
 }
 
 // MARK: - OpenWeatherForecastResultsProcessor and OpenWeatherIconProcessor Implementation
@@ -142,6 +199,17 @@ extension MainViewController: OpenWeatherForecastResultsProcessor, OpenWeatherIc
 // MARK: - Private Functions
 private extension MainViewController
 {
+    func resetLabels()
+    {
+        descriptionLabel.text = "-"
+        minTemp.text = "- ℃"
+        maxTemp.text = "- ℃"
+        pressure.text = "- mbar"
+        humidity.text = "- %"
+        windSpeed.text = "- mph"
+        windDirection.text = "- °"
+    }
+    
     func stringFormat(for date: Date, includeDayOfMonth: Bool = false) -> String
     {
         if includeDayOfMonth {

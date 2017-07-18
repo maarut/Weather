@@ -8,6 +8,7 @@
 
 import Foundation
 
+// MARK: - WeatherItemError Enum
 enum WeatherItemError: Int
 {
     case keyNotFound
@@ -15,6 +16,8 @@ enum WeatherItemError: Int
     case temperaturesParse
 }
 
+// MARK: - WeatherItem Struct
+// response list.weather - item
 struct WeatherItem
 {
     static let temperaturesKey = "temp"

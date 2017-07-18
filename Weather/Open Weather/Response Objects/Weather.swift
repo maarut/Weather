@@ -8,11 +8,14 @@
 
 import Foundation
 
+// MARK: - WeatherDescriptionError Enum
 enum WeatherDescriptionError: Int
 {
     case keyNotFound
 }
 
+// MARK: - WeatherDescription
+// response - list.weather
 struct WeatherDescription
 {
     static let idKey = "id"

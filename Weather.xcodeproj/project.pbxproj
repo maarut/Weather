@@ -156,7 +156,6 @@
 			isa = PBXGroup;
 			children = (
 				E3563F491F1D3F1C004EA05C /* Range+Utils.swift */,
-				E3563F661F1E7322004EA05C /* Array+Utils.swift */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -274,7 +273,6 @@
 				E3563F4C1F1D47A6004EA05C /* OpenWeatherForecast.swift in Sources */,
 				E3563F451F1D3B59004EA05C /* OpenWeatherURL.swift in Sources */,
 				E3563F651F1E64A1004EA05C /* Icon+Extensions.swift in Sources */,
-				E3563F671F1E7322004EA05C /* Array+Utils.swift in Sources */,
 				E3563F471F1D3E1B004EA05C /* OpenWeatherNetworkOperation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

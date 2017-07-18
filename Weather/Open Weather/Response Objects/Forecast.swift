@@ -8,6 +8,7 @@
 
 import Foundation
 
+// MARK: - ForecastError Enum
 enum ForecastError: Int
 {
     case keyNotFound
@@ -16,6 +17,8 @@ enum ForecastError: Int
     case validation
 }
 
+// MARK: - Forecast struct
+// response
 struct Forecast
 {
     static let countKey = "cnt"

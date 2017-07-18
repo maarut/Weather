@@ -8,11 +8,14 @@
 
 import Foundation
 
+// MARK: - TemperaturesError Enum
 enum TemperaturesError: Int
 {
     case keyNotFound
 }
 
+// MARK: - Temperatures Struct
+// response list.temp
 struct Temperatures
 {
     static let dayKey = "day"

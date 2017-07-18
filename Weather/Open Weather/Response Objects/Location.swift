@@ -8,11 +8,14 @@
 
 import Foundation
 
+// MARK: - LocationError Enum
 enum LocationError: Int
 {
     case keyNotFound
 }
 
+// MARK: - Location Struct
+// response city
 struct Location
 {
     static let idKey = "id"
