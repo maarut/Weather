@@ -80,17 +80,19 @@ class DataController
             sectionNameKeyPath: nil, cacheName: nil)
     }
     
-    func addIcon(image: Data?, id: String, dateAdded: Date)
+    func icon(withId id: String) -> Icon?
     {
-        if let image = image {
-            mainThreadContext.perform {
-                let icon = Icon(entity: NSEntityDescription.entity(forEntityName: "Icon", in: self.mainThreadContext)!,
-                    insertInto: self.mainThreadContext)
-                icon.id = id
-                icon.data = image as NSData
-                self.save()
-            }
+        let fetchRequest = NSFetchRequest<Icon>(entityName: "Icon")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+        do {
+            let results = try self.mainThreadContext.fetch(fetchRequest)
+            return results.first
         }
+        catch let error as NSError {
+            log(error: error, abort: true)
+        }
+        return nil
     }
     
     func delete(_ icon: Icon)

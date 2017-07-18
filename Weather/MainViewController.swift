@@ -16,6 +16,7 @@ class MainViewController: UIViewController
     
     
     var location: CLLocationCoordinate2D!
+    var dataController: DataController!
     fileprivate let locationManager = CLLocationManager()
     fileprivate var currentForecast: Forecast!
     fileprivate var dateFormatter: DateFormatter!
@@ -56,7 +57,6 @@ extension MainViewController: CLLocationManagerDelegate
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus)
     {
-//        resetToolbar()
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
@@ -65,10 +65,8 @@ extension MainViewController: CLLocationManagerDelegate
         case CLError.Code.denied.rawValue:
             NSLog("Location services denied")
             locationManager.stopUpdatingLocation()
-            break
         case CLError.Code.locationUnknown.rawValue:
             NSLog("Unable to determine location. Will try again later.")
-            break
         default:
             break
         }
@@ -87,6 +85,17 @@ extension MainViewController: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let view = collectionView.dequeueReusableCell(withReuseIdentifier: "daily", for: indexPath)
+        if let iconView = view.viewWithTag(1) as? UIImageView {
+            let id = currentForecast.weatherList[indexPath.row].weather.icon
+            if let icon = dataController.icon(withId: id),
+                let iconData = icon.data {
+                iconView.image = UIImage(data: iconData as Data)
+            }
+            else {
+                let criteria = OpenWeatherIconDownloaderCriteria(iconName: id)
+                OpenWeatherClient.instance.downloadIcon(crieria: criteria, resultsProcessor: self)
+            }
+        }
         if let dateLabel = view.viewWithTag(2) as? UILabel {
             dateLabel.text = stringFormat(for: currentForecast.weatherList[indexPath.row].date,
                 includeDayOfMonth: indexPath.row > 6)
@@ -102,9 +111,19 @@ extension MainViewController: UICollectionViewDelegate
 {
 }
 
-// MARK: - 
-extension MainViewController: OpenWeatherForecastResultsProcessor
+// MARK: - OpenWeatherForecastResultsProcessor and OpenWeatherIconProcessor Implementation
+extension MainViewController: OpenWeatherForecastResultsProcessor, OpenWeatherIconProcessor
 {
+    func process(icon: OpenWeatherIcon)
+    {
+        dataController.mainThreadContext.perform {
+            self.dataController.mainThreadContext.insert(
+                Icon(id: icon.iconName, data: icon.icon, context: self.dataController.mainThreadContext))
+            self.dataController.save()
+            self.collectionView.reloadData()
+        }
+    }
+    
     func process(forecast: Forecast)
     {
         DispatchQueue.main.async {
@@ -186,7 +205,7 @@ private extension MainViewController
                 message: "Please enable location services to automatically retrieve the weather forecast near you.",
                 preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel,
-                                            handler: { _ in self.dismiss(animated: true, completion: nil) } ))
+                handler: { _ in self.dismiss(animated: true, completion: nil) } ))
             alertVC.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
                 UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
             }))

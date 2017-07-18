@@ -11,7 +11,7 @@ import Foundation
 // MARK: - OpenWeatherIconProcessor Protocol
 protocol OpenWeatherIconProcessor: class
 {
-    func process(iconData: Data)
+    func process(icon: OpenWeatherIcon)
     func handle(error: NSError)
 }
 
@@ -27,10 +27,18 @@ struct OpenWeatherIconDownloaderCriteria
     let iconName: String
 }
 
+// MARK: - OpenWeatherIcon Struct
+struct OpenWeatherIcon
+{
+    let iconName: String
+    let icon: Data
+}
+
 // MARK: - OpenWeatherIconDownloader Implementation
 class OpenWeatherIconDownloader: OpenWeatherOperationProcessor, OpenWeatherOperationRequestor
 {
     fileprivate weak var resultsHandler: OpenWeatherIconProcessor?
+    fileprivate let iconName: String
     fileprivate let _request: URLRequest
     var request: URLRequest { return _request }
     
@@ -42,11 +50,12 @@ class OpenWeatherIconDownloader: OpenWeatherOperationProcessor, OpenWeatherOpera
         urlComponents.path = "/img/w/\(criteria.iconName).png"
         _request = URLRequest(url: urlComponents.url!)
         self.resultsHandler = resultsHandler
+        self.iconName = criteria.iconName
     }
     
     func process(data: Data)
     {
-        resultsHandler?.process(iconData: data)
+        resultsHandler?.process(icon: OpenWeatherIcon(iconName: iconName, icon: data))
     }
     
     func handle(error: NSError)

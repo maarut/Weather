@@ -27,6 +27,7 @@
 		E3563F5D1F1DE051004EA05C /* OpenWeatherIconDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F5C1F1DE051004EA05C /* OpenWeatherIconDownloader.swift */; };
 		E3563F611F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E3563F5F1F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld */; };
 		E3563F631F1E4544004EA05C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F621F1E4544004EA05C /* DataController.swift */; };
+		E3563F651F1E64A1004EA05C /* Icon+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F641F1E64A1004EA05C /* Icon+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		E3563F5C1F1DE051004EA05C /* OpenWeatherIconDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OpenWeatherIconDownloader.swift; path = "Open Weather/OpenWeatherIconDownloader.swift"; sourceTree = "<group>"; };
 		E3563F601F1E4422004EA05C /* OpenWeatherCache.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OpenWeatherCache.xcdatamodel; sourceTree = "<group>"; };
 		E3563F621F1E4544004EA05C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataController.swift; path = Cache/DataController.swift; sourceTree = "<group>"; };
+		E3563F641F1E64A1004EA05C /* Icon+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Icon+Extensions.swift"; path = "Cache/Icon+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				E3563F491F1D3F1C004EA05C /* Range+Utils.swift */,
+				E3563F661F1E7322004EA05C /* Array+Utils.swift */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -175,6 +178,7 @@
 			children = (
 				E3563F5F1F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld */,
 				E3563F621F1E4544004EA05C /* DataController.swift */,
+				E3563F641F1E64A1004EA05C /* Icon+Extensions.swift */,
 			);
 			name = Cache;
 			sourceTree = "<group>";
@@ -269,6 +273,8 @@
 				E3563F511F1D4BC1004EA05C /* Location.swift in Sources */,
 				E3563F4C1F1D47A6004EA05C /* OpenWeatherForecast.swift in Sources */,
 				E3563F451F1D3B59004EA05C /* OpenWeatherURL.swift in Sources */,
+				E3563F651F1E64A1004EA05C /* Icon+Extensions.swift in Sources */,
+				E3563F671F1E7322004EA05C /* Array+Utils.swift in Sources */,
 				E3563F471F1D3E1B004EA05C /* OpenWeatherNetworkOperation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
