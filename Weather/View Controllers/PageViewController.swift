@@ -67,7 +67,7 @@ class PageViewController: UIPageViewController, UIPageViewControllerDelegate, UI
     
     func presentationCount(for pageViewController: UIPageViewController) -> Int
     {
-        return savedLocations.fetchedObjects?.count ?? 0
+        return pages.count
     }
     
     func presentationIndex(for pageViewController: UIPageViewController) -> Int
@@ -140,7 +140,7 @@ extension PageViewController: NSFetchedResultsControllerDelegate
                 vc.location = loc
                 vc.shareButton = shareButton
                 pages.append(vc)
-                currentIndex = pages.count
+                currentIndex = pages.count - 1
                 setViewControllers([vc], direction: .forward, animated: true, completion: nil)
             }
             break
