@@ -30,6 +30,8 @@
 		E3563F651F1E64A1004EA05C /* Icon+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F641F1E64A1004EA05C /* Icon+Extensions.swift */; };
 		E3563F691F1F5E77004EA05C /* SavedLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F681F1F5E77004EA05C /* SavedLocation+Extensions.swift */; };
 		E3563F6B1F1F67C4004EA05C /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F6A1F1F67C4004EA05C /* PageViewController.swift */; };
+		E3563F6D1F1F8691004EA05C /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F6C1F1F8691004EA05C /* SearchViewController.swift */; };
+		E3563F6F1F1F895A004EA05C /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F6E1F1F895A004EA05C /* ContainerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,8 @@
 		E3563F641F1E64A1004EA05C /* Icon+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Icon+Extensions.swift"; path = "Cache/Icon+Extensions.swift"; sourceTree = "<group>"; };
 		E3563F681F1F5E77004EA05C /* SavedLocation+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "SavedLocation+Extensions.swift"; path = "Cache/SavedLocation+Extensions.swift"; sourceTree = "<group>"; };
 		E3563F6A1F1F67C4004EA05C /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PageViewController.swift; path = "View Controllers/PageViewController.swift"; sourceTree = "<group>"; };
+		E3563F6C1F1F8691004EA05C /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchViewController.swift; path = "View Controllers/SearchViewController.swift"; sourceTree = "<group>"; };
+		E3563F6E1F1F895A004EA05C /* ContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContainerViewController.swift; path = "View Controllers/ContainerViewController.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +147,8 @@
 			children = (
 				E3563F281F1D3206004EA05C /* MainViewController.swift */,
 				E3563F6A1F1F67C4004EA05C /* PageViewController.swift */,
+				E3563F6C1F1F8691004EA05C /* SearchViewController.swift */,
+				E3563F6E1F1F895A004EA05C /* ContainerViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -276,7 +282,9 @@
 				E3563F6B1F1F67C4004EA05C /* PageViewController.swift in Sources */,
 				E3563F4A1F1D3F1C004EA05C /* Range+Utils.swift in Sources */,
 				E3563F581F1D5010004EA05C /* Weather.swift in Sources */,
+				E3563F6F1F1F895A004EA05C /* ContainerViewController.swift in Sources */,
 				E3563F611F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld in Sources */,
+				E3563F6D1F1F8691004EA05C /* SearchViewController.swift in Sources */,
 				E3563F511F1D4BC1004EA05C /* Location.swift in Sources */,
 				E3563F4C1F1D47A6004EA05C /* OpenWeatherForecast.swift in Sources */,
 				E3563F451F1D3B59004EA05C /* OpenWeatherURL.swift in Sources */,

@@ -25,8 +25,11 @@ class MainViewController: UIViewController
     @IBOutlet weak var windSpeed: UILabel!
     @IBOutlet weak var windDirection: UILabel!
     
+    
+    weak var shareButton: UIBarButtonItem!
     var location: SavedLocation?
     var dataController: DataController!
+    fileprivate let speechSynthesiser = AVSpeechSynthesizer()
     fileprivate let locationManager = CLLocationManager()
     fileprivate var currentForecast: Forecast!
     fileprivate var dateFormatter: DateFormatter!
@@ -39,8 +42,15 @@ class MainViewController: UIViewController
         dateFormatter.locale = Locale.current
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-        if let id = location?.id {
-            let searchCriteria = OpenWeatherForecastCriteria(id: id, units: .celcius, count: 10)
+        if let location = location {
+            let searchCriteria: OpenWeatherForecastCriteria
+            if let id = location.id {
+                searchCriteria = OpenWeatherForecastCriteria(id: id, units: .celcius, count: 10)
+            }
+            else {
+                searchCriteria = OpenWeatherForecastCriteria(latitude: location.latitude, longitude: location.longitude,
+                    units: .celcius, count: 10)
+            }
             OpenWeatherClient.instance.retrieveForecast(searchCriteria: searchCriteria, resultsProcessor: self)
         }
         else {
@@ -53,11 +63,15 @@ class MainViewController: UIViewController
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-        navigationItem.setRightBarButton(
-            UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share(_:))), animated: false)
-        navigationItem.title = "Forecast"
-        navigationController?.navigationBar.setItems([navigationItem], animated: false)
         
+        shareButton.target = self
+        shareButton.action = #selector(share(_:))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool)
+    {
+        super.viewWillDisappear(animated)
+        speechSynthesiser.stopSpeaking(at: AVSpeechBoundary.word)
     }
 }
 
@@ -207,6 +221,16 @@ extension MainViewController: OpenWeatherForecastResultsProcessor, OpenWeatherIc
             self.currentForecast = forecast
             self.locationLabel.text = forecast.location.name
             self.collectionView.reloadData()
+            self.location?.managedObjectContext?.perform {
+                if self.location?.id == nil {
+                    self.location?.id = "\(forecast.location.id)"
+                    do {
+                        try self.location?.managedObjectContext?.save()
+                        self.dataController.save()
+                    }
+                    catch let error as NSError { NSLog("\(error.localizedDescription)\n\(error)") }
+                }
+            }
         }
     }
     
@@ -334,7 +358,6 @@ private extension MainViewController
     
     func speakForecast()
     {
-        let speechSynthesiser = AVSpeechSynthesizer()
         dateFormatter.dateStyle = .long
         dateFormatter.timeStyle = .none
         dateFormatter.dateFormat = nil

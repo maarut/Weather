@@ -107,7 +107,7 @@ class DataController
     {
         let context = c ?? mainThreadContext
         let request: NSFetchRequest<SavedLocation> = SavedLocation.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "dateAdded", ascending: true)]
         return NSFetchedResultsController(fetchRequest: request, managedObjectContext: context,
             sectionNameKeyPath: nil, cacheName: nil)
     }
