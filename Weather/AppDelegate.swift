@@ -12,10 +12,13 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var dataController: DataController!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        dataController = DataController(withModelName: "OpenWeatherCache")
+        let rootVC = (window?.rootViewController as? UINavigationController)?.topViewController as? MainViewController
+        rootVC?.dataController = dataController
         return true
     }
 
@@ -43,4 +46,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-

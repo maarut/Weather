@@ -47,8 +47,6 @@ class MainViewController: UIViewController
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
 }
 
 // MARK: - CLLocationManagerDelegate Implementation
@@ -109,8 +107,6 @@ extension MainViewController: UICollectionViewDataSource
             dateLabel.text = stringFormat(for: currentForecast.weatherList[indexPath.row].date,
                 includeDayOfMonth: indexPath.row > 6)
         }
-        view.layer.borderColor = UIColor.blue.cgColor
-        view.layer.borderWidth = 1.0
         return view
     }
 }
@@ -157,7 +153,7 @@ extension MainViewController: UICollectionViewDelegate
     
 }
 
-// MARK: - UIGestureRecogniser Handler
+// MARK: - Event Handlers
 private extension MainViewController
 {
     dynamic func panned(_ gestureRecogniser: UIPanGestureRecognizer)
@@ -165,6 +161,16 @@ private extension MainViewController
         if abs(gestureRecogniser.translation(in: collectionView).x) > 75 {
             resetLabels()
         }
+    }
+    
+    @IBAction dynamic func share(_ sender: UIBarButtonItem)
+    {
+        let screenshot = snapshotVC()
+        let description = "Weather forecast for \(currentForecast.location.name). " +
+            "Today's weather - \(currentForecast.weatherList[0].weather.description)."
+        let activityController = UIActivityViewController(activityItems: [screenshot, description],
+            applicationActivities: nil)
+        present(activityController, animated: true, completion: nil)
     }
 }
 
@@ -210,8 +216,19 @@ private extension MainViewController
         windDirection.text = "- °"
     }
     
+    func isToday(_ date: Date) -> Bool
+    {
+        let todayComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        return todayComponents.day == dateComponents.day && todayComponents.month == dateComponents.month &&
+            todayComponents.year == dateComponents.year
+    }
+    
     func stringFormat(for date: Date, includeDayOfMonth: Bool = false) -> String
     {
+        if isToday(date) {
+            return "Today"
+        }
         if includeDayOfMonth {
             dateFormatter.dateFormat = "ccc dd"
             let dateString = dateFormatter.string(from: date)
@@ -282,6 +299,18 @@ private extension MainViewController
         else {
             authoriseLocationServices()
         }
+    }
+    
+    func snapshotVC() -> UIImage
+    {
+        var drawingFrame = view.bounds
+        drawingFrame.size.height *= UIScreen.main.scale
+        drawingFrame.size.width *= UIScreen.main.scale
+        UIGraphicsBeginImageContext(drawingFrame.size)
+        view.drawHierarchy(in: drawingFrame, afterScreenUpdates: true)
+        let composedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return composedImage!
     }
 }
 
