@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import AVFoundation
 
 private let kphToMphFactor = 0.6213711922
 
@@ -29,6 +30,7 @@ class MainViewController: UIViewController
     fileprivate let locationManager = CLLocationManager()
     fileprivate var currentForecast: Forecast!
     fileprivate var dateFormatter: DateFormatter!
+    fileprivate var selectedIndexPath: IndexPath?
     
     override func viewDidLoad()
     {
@@ -40,12 +42,6 @@ class MainViewController: UIViewController
         checkLocationServices()
         locationManager.startUpdatingLocation()
         // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning()
-    {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }
 
@@ -64,6 +60,7 @@ extension MainViewController: CLLocationManagerDelegate
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus)
     {
+        NSLog("Authorisation status changed. New status \(status.rawValue)")
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
@@ -116,6 +113,7 @@ extension MainViewController: UICollectionViewDelegate
 {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
+        self.selectedIndexPath = indexPath
         let weatherInfo = currentForecast.weatherList[indexPath.row]
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .none
@@ -126,12 +124,13 @@ extension MainViewController: UICollectionViewDelegate
         let humidity = weatherInfo.humidity
         let windDirection = weatherInfo.windDirection
         descriptionLabel.text = weatherInfo.weather.description
-        self.minTemp.text = "\(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") ℃"
-        self.maxTemp.text = "\(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") ℃"
+        self.minTemp.text = "\(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") °C"
+        self.maxTemp.text = "\(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") °C"
         self.pressure.text = "\(numberFormatter.string(from: pressure as NSNumber) ?? "\(pressure)") mbar"
         self.humidity.text = "\(numberFormatter.string(from: humidity as NSNumber) ?? "\(humidity)")%"
         self.windSpeed.text = "\(numberFormatter.string(from: speed as NSNumber) ?? "\(speed)") mph"
         self.windDirection.text = "\(numberFormatter.string(from: windDirection as NSNumber) ?? "\(windDirection)") °"
+        speakForecast()
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
@@ -165,9 +164,20 @@ private extension MainViewController
     
     @IBAction dynamic func share(_ sender: UIBarButtonItem)
     {
-        let screenshot = snapshotVC()
-        let description = "Weather forecast for \(currentForecast.location.name). " +
+        let description: String
+        if let selectedIndexPath = self.selectedIndexPath {
+            description = "Weather forecast for \(currentForecast.location.name). " +
+            "Today's weather - \(currentForecast.weatherList[selectedIndexPath.row].weather.description)."
+        }
+        else {
+            let ip = IndexPath(row: 0, section: 0)
+            collectionView.selectItem(at: ip, animated: false, scrollPosition: .centeredHorizontally)
+            collectionView(collectionView, didSelectItemAt: ip)
+            
+            description = "Weather forecast for \(currentForecast.location.name). " +
             "Today's weather - \(currentForecast.weatherList[0].weather.description)."
+        }
+        let screenshot = snapshotVC()
         let activityController = UIActivityViewController(activityItems: [screenshot, description],
             applicationActivities: nil)
         present(activityController, animated: true, completion: nil)
@@ -208,19 +218,21 @@ private extension MainViewController
     func resetLabels()
     {
         descriptionLabel.text = "-"
-        minTemp.text = "- ℃"
-        maxTemp.text = "- ℃"
+        minTemp.text = "- °C"
+        maxTemp.text = "- °C"
         pressure.text = "- mbar"
         humidity.text = "- %"
         windSpeed.text = "- mph"
         windDirection.text = "- °"
+        selectedIndexPath = nil
     }
     
     func isToday(_ date: Date) -> Bool
     {
         let todayComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date())
         let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: date)
-        return todayComponents.day == dateComponents.day && todayComponents.month == dateComponents.month &&
+        return todayComponents.day == dateComponents.day &&
+            todayComponents.month == dateComponents.month &&
             todayComponents.year == dateComponents.year
     }
     
@@ -311,6 +323,26 @@ private extension MainViewController
         let composedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return composedImage!
+    }
+    
+    func speakForecast()
+    {
+        let speechSynthesiser = AVSpeechSynthesizer()
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateFormat = nil
+        let date = dateFormatter.string(from: currentForecast.weatherList[selectedIndexPath!.row].date)
+        let utterances = [AVSpeechUtterance(string: "Forecast for \(locationLabel.text!) on \(date)."),
+                        AVSpeechUtterance(string: "Expect \(descriptionLabel.text!)."),
+                        AVSpeechUtterance(string: "Minimum Temperature is \(minTemp.text!)"),
+                        AVSpeechUtterance(string: "Maximum Temperature is \(maxTemp.text!)"),
+                        AVSpeechUtterance(string: "Humidity is \(humidity.text!)"),
+                        AVSpeechUtterance(string: "Wind speed is \(windSpeed.text!)")
+        ]
+        for utterance in utterances {
+            utterance.postUtteranceDelay = 0.4
+            speechSynthesiser.speak(utterance)
+        }
     }
 }
 
