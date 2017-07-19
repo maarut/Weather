@@ -113,7 +113,7 @@ private extension OpenWeatherForecast
         catch let error as NSError {
             let userInfo = [NSLocalizedDescriptionKey: "Unable to parse JSON object",
                 NSUnderlyingErrorKey: error] as [String : Any]
-            let error = NSError(domain: "TFLBusStopSearch.parseJson",
+            let error = NSError(domain: "OpenWeatherForecast.parseJson",
                 code: OpenWeatherForecastErrorCodes.noData.rawValue, userInfo: userInfo)
             handle(error: error)
         }
