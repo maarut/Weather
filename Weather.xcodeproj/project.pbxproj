@@ -28,12 +28,14 @@
 		E3563F611F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E3563F5F1F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld */; };
 		E3563F631F1E4544004EA05C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F621F1E4544004EA05C /* DataController.swift */; };
 		E3563F651F1E64A1004EA05C /* Icon+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F641F1E64A1004EA05C /* Icon+Extensions.swift */; };
+		E3563F691F1F5E77004EA05C /* SavedLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F681F1F5E77004EA05C /* SavedLocation+Extensions.swift */; };
+		E3563F6B1F1F67C4004EA05C /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F6A1F1F67C4004EA05C /* PageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E3563F231F1D3206004EA05C /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3563F261F1D3206004EA05C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E3563F281F1D3206004EA05C /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		E3563F281F1D3206004EA05C /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainViewController.swift; path = "View Controllers/MainViewController.swift"; sourceTree = "<group>"; };
 		E3563F2B1F1D3206004EA05C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E3563F2D1F1D3206004EA05C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E3563F301F1D3206004EA05C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -57,6 +59,8 @@
 		E3563F601F1E4422004EA05C /* OpenWeatherCache.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OpenWeatherCache.xcdatamodel; sourceTree = "<group>"; };
 		E3563F621F1E4544004EA05C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataController.swift; path = Cache/DataController.swift; sourceTree = "<group>"; };
 		E3563F641F1E64A1004EA05C /* Icon+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Icon+Extensions.swift"; path = "Cache/Icon+Extensions.swift"; sourceTree = "<group>"; };
+		E3563F681F1F5E77004EA05C /* SavedLocation+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "SavedLocation+Extensions.swift"; path = "Cache/SavedLocation+Extensions.swift"; sourceTree = "<group>"; };
+		E3563F6A1F1F67C4004EA05C /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PageViewController.swift; path = "View Controllers/PageViewController.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				E3563F281F1D3206004EA05C /* MainViewController.swift */,
+				E3563F6A1F1F67C4004EA05C /* PageViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -178,6 +183,7 @@
 				E3563F5F1F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld */,
 				E3563F621F1E4544004EA05C /* DataController.swift */,
 				E3563F641F1E64A1004EA05C /* Icon+Extensions.swift */,
+				E3563F681F1F5E77004EA05C /* SavedLocation+Extensions.swift */,
 			);
 			name = Cache;
 			sourceTree = "<group>";
@@ -259,6 +265,7 @@
 				E3563F3B1F1D349A004EA05C /* OpenWeatherConstants.swift in Sources */,
 				E3563F291F1D3206004EA05C /* MainViewController.swift in Sources */,
 				E3563F5D1F1DE051004EA05C /* OpenWeatherIconDownloader.swift in Sources */,
+				E3563F691F1F5E77004EA05C /* SavedLocation+Extensions.swift in Sources */,
 				E3563F271F1D3206004EA05C /* AppDelegate.swift in Sources */,
 				E3563F5A1F1D6780004EA05C /* OpenWeatherClient.swift in Sources */,
 				E3563F541F1D4CE9004EA05C /* WeatherItem.swift in Sources */,
@@ -266,6 +273,7 @@
 				E3563F631F1E4544004EA05C /* DataController.swift in Sources */,
 				E3563F4F1F1D4AD8004EA05C /* Forecast.swift in Sources */,
 				E3563F561F1D4D6A004EA05C /* Temperatures.swift in Sources */,
+				E3563F6B1F1F67C4004EA05C /* PageViewController.swift in Sources */,
 				E3563F4A1F1D3F1C004EA05C /* Range+Utils.swift in Sources */,
 				E3563F581F1D5010004EA05C /* Weather.swift in Sources */,
 				E3563F611F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld in Sources */,

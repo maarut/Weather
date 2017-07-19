@@ -4,7 +4,14 @@
         <attribute name="data" attributeType="Binary" allowsExternalBinaryDataStorage="YES" storedInTruthFile="YES" syncable="YES"/>
         <attribute name="id" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="SavedLocation" representedClassName="SavedLocation" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
         <element name="Icon" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="SavedLocation" positionX="-54" positionY="9" width="128" height="105"/>
     </elements>
 </model>

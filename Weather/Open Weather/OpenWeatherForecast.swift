@@ -35,6 +35,7 @@ struct OpenWeatherForecastCriteria
 {
     let latitude: Double
     let longitude: Double
+    let id: String?
     let units: OpenWeatherForecastUnit
     let count: Int
     
@@ -44,6 +45,17 @@ struct OpenWeatherForecastCriteria
         self.longitude = longitude
         self.count = count
         self.units = units
+        self.id = nil
+    }
+    
+    init(id: String, units: OpenWeatherForecastUnit, count: Int)
+    {
+        latitude = Double.infinity
+        longitude = Double.infinity
+        self.count = count
+        self.units = units
+        self.id = id
+        
     }
 }
 
@@ -61,12 +73,18 @@ class OpenWeatherForecast: OpenWeatherOperationRequestor, OpenWeatherOperationPr
         case .fahrenheit:   unit = "imperial"
         case .kelvin:       unit = ""
         }
-        let parameters: [String: Any] = [
-            "lat": searchCriteria.latitude as NSNumber,
-            "lon": searchCriteria.longitude as NSNumber,
-            "cnt": searchCriteria.count as NSNumber,
-            "units": unit
-        ]
+        let parameters: [String: Any]
+        if let id = searchCriteria.id {
+            parameters = ["id": id, "cnt": searchCriteria.count as NSNumber, "units": unit]
+        }
+        else {
+            parameters = [
+                "lat": searchCriteria.latitude as NSNumber,
+                "lon": searchCriteria.longitude as NSNumber,
+                "cnt": searchCriteria.count as NSNumber,
+                "units": unit
+            ]
+        }
         _request = URLRequest(url: OpenWeatherURL(method: "forecast/daily", parameters: parameters).url as URL)
         self.resultsHandler = resultsHandler
     }

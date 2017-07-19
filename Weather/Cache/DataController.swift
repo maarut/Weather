@@ -102,6 +102,23 @@ class DataController
             self.save()
         }
     }
+    
+    func savedLocations(context c: NSManagedObjectContext? = nil) -> NSFetchedResultsController<SavedLocation>
+    {
+        let context = c ?? mainThreadContext
+        let request: NSFetchRequest<SavedLocation> = SavedLocation.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+        return NSFetchedResultsController(fetchRequest: request, managedObjectContext: context,
+            sectionNameKeyPath: nil, cacheName: nil)
+    }
+    
+    func delete(_ savedLocation: SavedLocation)
+    {
+        mainThreadContext.perform {
+            self.mainThreadContext.delete(savedLocation)
+            self.save()
+        }
+    }
 }
 
 private func log(error: NSError, abort: Bool)

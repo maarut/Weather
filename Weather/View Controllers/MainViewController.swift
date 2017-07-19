@@ -25,7 +25,7 @@ class MainViewController: UIViewController
     @IBOutlet weak var windSpeed: UILabel!
     @IBOutlet weak var windDirection: UILabel!
     
-    var location: CLLocationCoordinate2D!
+    var location: SavedLocation?
     var dataController: DataController!
     fileprivate let locationManager = CLLocationManager()
     fileprivate var currentForecast: Forecast!
@@ -39,11 +39,29 @@ class MainViewController: UIViewController
         dateFormatter.locale = Locale.current
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-        checkLocationServices()
-        locationManager.startUpdatingLocation()
+        if let id = location?.id {
+            let searchCriteria = OpenWeatherForecastCriteria(id: id, units: .celcius, count: 10)
+            OpenWeatherClient.instance.retrieveForecast(searchCriteria: searchCriteria, resultsProcessor: self)
+        }
+        else {
+            checkLocationServices()
+            locationManager.startUpdatingLocation()
+        }
         // Do any additional setup after loading the view, typically from a nib.
     }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        navigationItem.setRightBarButton(
+            UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share(_:))), animated: false)
+        navigationItem.title = "Forecast"
+        navigationController?.navigationBar.setItems([navigationItem], animated: false)
+        
+    }
 }
+
+
 
 // MARK: - CLLocationManagerDelegate Implementation
 extension MainViewController: CLLocationManagerDelegate
@@ -51,10 +69,10 @@ extension MainViewController: CLLocationManagerDelegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
     {
         if let location = locations.last {
+            locationManager.stopUpdatingLocation()
             let searchCriteria = OpenWeatherForecastCriteria(latitude: location.coordinate.latitude,
                 longitude: location.coordinate.longitude, units: .celcius, count: 10)
             OpenWeatherClient.instance.retrieveForecast(searchCriteria: searchCriteria, resultsProcessor: self)
-            locationManager.stopUpdatingLocation()
         }
     }
     
@@ -113,23 +131,8 @@ extension MainViewController: UICollectionViewDelegate
 {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        self.selectedIndexPath = indexPath
-        let weatherInfo = currentForecast.weatherList[indexPath.row]
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .none
-        let speed = weatherInfo.windSpeed * 3600 * kphToMphFactor / 1000
-        let minTemp = weatherInfo.temperatures.min
-        let maxTemp = weatherInfo.temperatures.max
-        let pressure = weatherInfo.pressure
-        let humidity = weatherInfo.humidity
-        let windDirection = weatherInfo.windDirection
-        descriptionLabel.text = weatherInfo.weather.description
-        self.minTemp.text = "\(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") °C"
-        self.maxTemp.text = "\(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") °C"
-        self.pressure.text = "\(numberFormatter.string(from: pressure as NSNumber) ?? "\(pressure)") mbar"
-        self.humidity.text = "\(numberFormatter.string(from: humidity as NSNumber) ?? "\(humidity)")%"
-        self.windSpeed.text = "\(numberFormatter.string(from: speed as NSNumber) ?? "\(speed)") mph"
-        self.windDirection.text = "\(numberFormatter.string(from: windDirection as NSNumber) ?? "\(windDirection)") °"
+        selectedIndexPath = indexPath
+        setDetailWeatherData()
         speakForecast()
     }
     
@@ -172,12 +175,13 @@ private extension MainViewController
         else {
             let ip = IndexPath(row: 0, section: 0)
             collectionView.selectItem(at: ip, animated: false, scrollPosition: .centeredHorizontally)
-            collectionView(collectionView, didSelectItemAt: ip)
+            selectedIndexPath = ip
+            setDetailWeatherData()
             
             description = "Weather forecast for \(currentForecast.location.name). " +
             "Today's weather - \(currentForecast.weatherList[0].weather.description)."
         }
-        let screenshot = snapshotVC()
+        let screenshot = snapshotScreen()
         let activityController = UIActivityViewController(activityItems: [screenshot, description],
             applicationActivities: nil)
         present(activityController, animated: true, completion: nil)
@@ -271,7 +275,7 @@ private extension MainViewController
         case .restricted:
             let alertVC = UIAlertController(title: "Location Services Restricted",
                 message: "Please speak to your device manager to enable location services to automatically retrieve " +
-                "a forecast for your current location.",
+                    "a forecast for your current location.",
                 preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel,
                 handler: { _ in self.dismiss(animated: true, completion: nil) } ))
@@ -313,13 +317,16 @@ private extension MainViewController
         }
     }
     
-    func snapshotVC() -> UIImage
+    func snapshotScreen() -> UIImage
     {
-        var drawingFrame = view.bounds
-        drawingFrame.size.height *= UIScreen.main.scale
-        drawingFrame.size.width *= UIScreen.main.scale
+        guard let window = (UIApplication.shared.delegate as? AppDelegate)?.window else {
+            fatalError("AppDelegate's window property not set.")
+        }
+        var drawingFrame = window.bounds
+        drawingFrame.size.height *= window.screen.scale
+        drawingFrame.size.width *= window.screen.scale
         UIGraphicsBeginImageContext(drawingFrame.size)
-        view.drawHierarchy(in: drawingFrame, afterScreenUpdates: true)
+        window.drawHierarchy(in: drawingFrame, afterScreenUpdates: true)
         let composedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return composedImage!
@@ -343,6 +350,27 @@ private extension MainViewController
             utterance.postUtteranceDelay = 0.4
             speechSynthesiser.speak(utterance)
         }
+    }
+    
+    func setDetailWeatherData()
+    {
+        guard let indexPath = selectedIndexPath else { return }
+        let weatherInfo = currentForecast.weatherList[indexPath.row]
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .none
+        let speed = weatherInfo.windSpeed * 3600 * kphToMphFactor / 1000
+        let minTemp = weatherInfo.temperatures.min
+        let maxTemp = weatherInfo.temperatures.max
+        let pressure = weatherInfo.pressure
+        let humidity = weatherInfo.humidity
+        let windDirection = weatherInfo.windDirection
+        descriptionLabel.text = weatherInfo.weather.description
+        self.minTemp.text = "\(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") °C"
+        self.maxTemp.text = "\(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") °C"
+        self.pressure.text = "\(numberFormatter.string(from: pressure as NSNumber) ?? "\(pressure)") mbar"
+        self.humidity.text = "\(numberFormatter.string(from: humidity as NSNumber) ?? "\(humidity)")%"
+        self.windSpeed.text = "\(numberFormatter.string(from: speed as NSNumber) ?? "\(speed)") mph"
+        self.windDirection.text = "\(numberFormatter.string(from: windDirection as NSNumber) ?? "\(windDirection)") °"
     }
 }
 
