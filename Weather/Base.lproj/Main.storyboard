@@ -117,7 +117,6 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <constraints>
                                     <constraint firstItem="bX2-ds-w4a" firstAttribute="top" secondItem="1cQ-c7-tYi" secondAttribute="bottom" constant="8" symbolic="YES" id="0tI-7B-Tfm"/>
                                     <constraint firstItem="Fbj-sh-DGi" firstAttribute="leading" secondItem="hgK-sO-gcu" secondAttribute="leading" constant="20" symbolic="YES" id="2jy-cA-g4b"/>
@@ -212,7 +211,6 @@
                                 </connections>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="hgK-sO-gcu" secondAttribute="trailing" id="Cx1-ii-86R"/>
                             <constraint firstItem="7Pb-Kp-V9x" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="Fzk-TL-cBH"/>
