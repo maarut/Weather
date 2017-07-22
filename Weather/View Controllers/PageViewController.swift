@@ -37,7 +37,7 @@ class PageViewController: UIPageViewController, UIPageViewControllerDelegate, UI
     func pageViewController(_ pageViewController: UIPageViewController,
         viewControllerBefore viewController: UIViewController) -> UIViewController?
     {
-        guard let vc = viewController as? MainViewController else { return nil }
+        guard let vc = viewController as? ForecastViewController else { return nil }
         if let location = vc.location,
             let savedLocations = savedLocations.fetchedObjects,
             let index = savedLocations.index(of: location) {
@@ -51,7 +51,8 @@ class PageViewController: UIPageViewController, UIPageViewControllerDelegate, UI
     func pageViewController(_ pageViewController: UIPageViewController,
         viewControllerAfter viewController: UIViewController) -> UIViewController?
     {
-        guard let vc = viewController as? MainViewController, let savedLocations = savedLocations.fetchedObjects else {
+        guard let vc = viewController as? ForecastViewController,
+            let savedLocations = savedLocations.fetchedObjects else {
             return nil
         }
         guard savedLocations.count > 0 else { return nil }
@@ -74,7 +75,7 @@ class PageViewController: UIPageViewController, UIPageViewControllerDelegate, UI
     
     func presentationIndex(for pageViewController: UIPageViewController) -> Int
     {
-        if let vc = viewControllers?.first as? MainViewController,
+        if let vc = viewControllers?.first as? ForecastViewController,
             let location = vc.location,
             let savedLocations = self.savedLocations.fetchedObjects,
             let index = savedLocations.index(of: location) {
@@ -87,7 +88,7 @@ class PageViewController: UIPageViewController, UIPageViewControllerDelegate, UI
         previousViewControllers: [UIViewController], transitionCompleted completed: Bool)
     {
         if completed {
-            if let vc = viewControllers?.first as? MainViewController {
+            if let vc = viewControllers?.first as? ForecastViewController {
                 deleteButton.isEnabled = vc.location != nil
             }
         }
@@ -99,16 +100,16 @@ private extension PageViewController
 {
     dynamic func deleteLocation()
     {
-        if let location = (viewControllers?.first as? MainViewController)?.location {
+        if let location = (viewControllers?.first as? ForecastViewController)?.location {
             dataController.delete(location)
             dataController.save()
         }
     }
     
-    func createVC(withLocation location: SavedLocation?) -> MainViewController
+    func createVC(withLocation location: SavedLocation?) -> ForecastViewController
     {
         guard let storyboard = storyboard else { fatalError("UI wasn't constructed from a storyboard.") }
-        let vc = storyboard.instantiateViewController(withIdentifier: "Forecast") as! MainViewController
+        let vc = storyboard.instantiateViewController(withIdentifier: "Forecast") as! ForecastViewController
         vc.location = location
         vc.shareButton = shareButton
         vc.dataController = dataController

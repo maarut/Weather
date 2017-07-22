@@ -1,5 +1,5 @@
 //
-//  MainViewController.swift
+//  ForecastViewController.swift
 //  Weather
 //
 //  Created by Maarut Chandegra on 17/07/2017.
@@ -12,19 +12,10 @@ import AVFoundation
 
 private let kphToMphFactor = 0.6213711922
 
-class MainViewController: UIViewController
+class ForecastViewController: UIViewController
 {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
-    
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var minTemp: UILabel!
-    @IBOutlet weak var maxTemp: UILabel!
-    @IBOutlet weak var pressure: UILabel!
-    @IBOutlet weak var humidity: UILabel!
-    @IBOutlet weak var windSpeed: UILabel!
-    @IBOutlet weak var windDirection: UILabel!
-    
     
     weak var shareButton: UIBarButtonItem!
     var location: SavedLocation?
@@ -32,8 +23,10 @@ class MainViewController: UIViewController
     fileprivate let speechSynthesiser = AVSpeechSynthesizer()
     fileprivate let locationManager = CLLocationManager()
     fileprivate var currentForecast: Forecast!
+    fileprivate var detailedForecast: HourlyForecast?
     fileprivate var dateFormatter: DateFormatter!
     fileprivate var selectedIndexPath: IndexPath?
+    fileprivate weak var forecastDetailVC: ForecastDetailsViewController!
     
     override func viewDidLoad()
     {
@@ -45,7 +38,7 @@ class MainViewController: UIViewController
         if let location = location {
             let searchCriteria: OpenWeatherForecastCriteria
             if let id = location.id {
-                searchCriteria = OpenWeatherForecastCriteria(id: id, units: .celcius, count: 10)
+                searchCriteria = OpenWeatherForecastCriteria(id: Int64(id), units: .celcius, count: 10)
             }
             else {
                 searchCriteria = OpenWeatherForecastCriteria(latitude: location.latitude, longitude: location.longitude,
@@ -68,17 +61,25 @@ class MainViewController: UIViewController
         shareButton.action = #selector(share(_:))
     }
     
-    override func viewWillDisappear(_ animated: Bool)
+    override func viewDidDisappear(_ animated: Bool)
     {
-        super.viewWillDisappear(animated)
+        super.viewDidDisappear(animated)
         speechSynthesiser.stopSpeaking(at: AVSpeechBoundary.word)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        switch segue.identifier ?? "" {
+        case "embed": forecastDetailVC = segue.destination as! ForecastDetailsViewController
+        default: return
+        }
     }
 }
 
 
 
 // MARK: - CLLocationManagerDelegate Implementation
-extension MainViewController: CLLocationManagerDelegate
+extension ForecastViewController: CLLocationManagerDelegate
 {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
     {
@@ -111,7 +112,7 @@ extension MainViewController: CLLocationManagerDelegate
 }
 
 // MARK: - UICollectionViewDataSource Implementation
-extension MainViewController: UICollectionViewDataSource
+extension ForecastViewController: UICollectionViewDataSource
 {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
@@ -141,13 +142,22 @@ extension MainViewController: UICollectionViewDataSource
 }
 
 // MARK: - UICollectionViewDelegate Implementation
-extension MainViewController: UICollectionViewDelegate
+extension ForecastViewController: UICollectionViewDelegate
 {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         selectedIndexPath = indexPath
-        setDetailWeatherData()
+        if let detailedForecast = detailedForecast {
+            update(detailedForecast: detailedForecast)
+        }
+        else {
+            let criteria = OpenWeatherHourlyForecastCriteria(
+                id: "\(currentForecast.location.id)", units: .celcius)
+            OpenWeatherClient.instance.retrieveHourlyForecast(searchCriteria: criteria, resultsProcessor: self)
+            setDetailWeatherData()
+        }
         speakForecast()
+        
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
@@ -158,24 +168,17 @@ extension MainViewController: UICollectionViewDelegate
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
     {
         scrollView.panGestureRecognizer.removeTarget(self, action: #selector(panned(_:)))
-        resetLabels()
     }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
-    {
-        resetLabels()
-    }
-    
-    
 }
 
 // MARK: - Event Handlers
-private extension MainViewController
+private extension ForecastViewController
 {
     dynamic func panned(_ gestureRecogniser: UIPanGestureRecognizer)
     {
         if abs(gestureRecogniser.translation(in: collectionView).x) > 75 {
             resetLabels()
+            speechSynthesiser.stopSpeaking(at: .word)
         }
     }
     
@@ -183,8 +186,10 @@ private extension MainViewController
     {
         let description: String
         if let selectedIndexPath = self.selectedIndexPath {
+            let weatherInfo = currentForecast.weatherList[selectedIndexPath.row]
             description = "Weather forecast for \(currentForecast.location.name). " +
-            "Today's weather - \(currentForecast.weatherList[selectedIndexPath.row].weather.description)."
+                "\(stringFormat(for: weatherInfo.date, includeDayOfMonth: selectedIndexPath.row > 6))'s weather - " +
+                weatherInfo.weather.description
         }
         else {
             let ip = IndexPath(row: 0, section: 0)
@@ -203,8 +208,17 @@ private extension MainViewController
 }
 
 // MARK: - OpenWeatherForecastResultsProcessor and OpenWeatherIconProcessor Implementation
-extension MainViewController: OpenWeatherForecastResultsProcessor, OpenWeatherIconProcessor
+extension ForecastViewController: OpenWeatherForecastResultsProcessor, OpenWeatherIconProcessor,
+    OpenWeatherHourlyForecastResultsProcessor
 {
+    func process(hourlyForecast: HourlyForecast)
+    {
+        DispatchQueue.main.async {
+            self.detailedForecast = hourlyForecast
+            self.update(detailedForecast: hourlyForecast)
+        }
+    }
+    
     func process(icon: OpenWeatherIcon)
     {
         dataController.mainThreadContext.perform {
@@ -223,7 +237,7 @@ extension MainViewController: OpenWeatherForecastResultsProcessor, OpenWeatherIc
             self.collectionView.reloadData()
             self.location?.managedObjectContext?.perform {
                 if self.location?.id == nil {
-                    self.location?.id = "\(forecast.location.id)"
+                    self.location?.id = Int64(forecast.location.id) as NSNumber
                     do {
                         try self.location?.managedObjectContext?.save()
                         self.dataController.save()
@@ -241,27 +255,22 @@ extension MainViewController: OpenWeatherForecastResultsProcessor, OpenWeatherIc
 }
 
 // MARK: - Private Functions
-private extension MainViewController
+private extension ForecastViewController
 {
-    func resetLabels()
+    func update(detailedForecast: HourlyForecast)
     {
-        descriptionLabel.text = "-"
-        minTemp.text = "- °C"
-        maxTemp.text = "- °C"
-        pressure.text = "- mbar"
-        humidity.text = "- %"
-        windSpeed.text = "- mph"
-        windDirection.text = "- °"
-        selectedIndexPath = nil
+        if let indexPath = selectedIndexPath {
+            let date = currentForecast.weatherList[indexPath.row].date
+            let details = detailedForecast.weatherList.filter( { isSameDay($0.date, date) } )
+            if details.count > 0 { forecastDetailVC.state = .hourly(details) }
+            else { forecastDetailVC.state = .overview(currentForecast.weatherList[indexPath.row]) }
+        }
     }
     
-    func isToday(_ date: Date) -> Bool
+    func resetLabels()
     {
-        let todayComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date())
-        let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: date)
-        return todayComponents.day == dateComponents.day &&
-            todayComponents.month == dateComponents.month &&
-            todayComponents.year == dateComponents.year
+        selectedIndexPath = nil
+        forecastDetailVC.state = .none
     }
     
     func stringFormat(for date: Date, includeDayOfMonth: Bool = false) -> String
@@ -358,16 +367,28 @@ private extension MainViewController
     
     func speakForecast()
     {
+        guard let indexPath = selectedIndexPath else { return }
         dateFormatter.dateStyle = .long
         dateFormatter.timeStyle = .none
         dateFormatter.dateFormat = nil
-        let date = dateFormatter.string(from: currentForecast.weatherList[selectedIndexPath!.row].date)
-        let utterances = [AVSpeechUtterance(string: "Forecast for \(locationLabel.text!) on \(date)."),
-                        AVSpeechUtterance(string: "Expect \(descriptionLabel.text!)."),
-                        AVSpeechUtterance(string: "Minimum Temperature is \(minTemp.text!)"),
-                        AVSpeechUtterance(string: "Maximum Temperature is \(maxTemp.text!)"),
-                        AVSpeechUtterance(string: "Humidity is \(humidity.text!)"),
-                        AVSpeechUtterance(string: "Wind speed is \(windSpeed.text!)")
+        let date = dateFormatter.string(from: currentForecast.weatherList[indexPath.row].date)
+        let weatherInfo = currentForecast.weatherList[indexPath.row]
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .none
+        let minTemp = weatherInfo.temperatures.min
+        let maxTemp = weatherInfo.temperatures.max
+        let humidity = weatherInfo.humidity
+        let speed = weatherInfo.windSpeed * 3600 * kphToMphFactor / 1000
+        let utterances = [AVSpeechUtterance(string: "Forecast for \(currentForecast.location.name) on \(date)."),
+            AVSpeechUtterance(string: "Expect \(weatherInfo.weather.description)."),
+            AVSpeechUtterance(string:
+                "Minimum Temperature is \(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") °C"),
+            AVSpeechUtterance(string:
+                "Maximum Temperature is \(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") °C"),
+            AVSpeechUtterance(string:
+                "Humidity is \(numberFormatter.string(from: humidity as NSNumber) ?? "\(humidity)")%"),
+            AVSpeechUtterance(string:
+                "Wind speed is \(numberFormatter.string(from: speed as NSNumber) ?? "\(speed)") mph")
         ]
         for utterance in utterances {
             utterance.postUtteranceDelay = 0.4
@@ -378,22 +399,23 @@ private extension MainViewController
     func setDetailWeatherData()
     {
         guard let indexPath = selectedIndexPath else { return }
-        let weatherInfo = currentForecast.weatherList[indexPath.row]
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .none
-        let speed = weatherInfo.windSpeed * 3600 * kphToMphFactor / 1000
-        let minTemp = weatherInfo.temperatures.min
-        let maxTemp = weatherInfo.temperatures.max
-        let pressure = weatherInfo.pressure
-        let humidity = weatherInfo.humidity
-        let windDirection = weatherInfo.windDirection
-        descriptionLabel.text = weatherInfo.weather.description
-        self.minTemp.text = "\(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") °C"
-        self.maxTemp.text = "\(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") °C"
-        self.pressure.text = "\(numberFormatter.string(from: pressure as NSNumber) ?? "\(pressure)") mbar"
-        self.humidity.text = "\(numberFormatter.string(from: humidity as NSNumber) ?? "\(humidity)")%"
-        self.windSpeed.text = "\(numberFormatter.string(from: speed as NSNumber) ?? "\(speed)") mph"
-        self.windDirection.text = "\(numberFormatter.string(from: windDirection as NSNumber) ?? "\(windDirection)") °"
+        forecastDetailVC.state = .overview(currentForecast.weatherList[indexPath.row])
     }
 }
 
+
+// MARK: - Private Utility Functions
+private func isSameDay(_ date: Date, _ other: Date) -> Bool
+{
+    let otherComponents = Calendar.current.dateComponents([.year, .month, .day], from: other)
+    let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: date)
+    return otherComponents.day == dateComponents.day &&
+        otherComponents.month == dateComponents.month &&
+        otherComponents.year == dateComponents.year
+}
+
+
+private func isToday(_ date: Date) -> Bool
+{
+    return isSameDay(date, Date())
+}

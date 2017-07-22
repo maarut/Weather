@@ -22,24 +22,16 @@ enum OpenWeatherForecastErrorCodes: Int
     case noData
 }
 
-// MARK: - OpenWeatherForecastUnit Enum
-enum OpenWeatherForecastUnit
-{
-    case kelvin
-    case celcius
-    case fahrenheit
-}
-
 // MARK: - OpenWeatherForecastCriteria Struct
 struct OpenWeatherForecastCriteria
 {
     let latitude: Double
     let longitude: Double
-    let id: String?
-    let units: OpenWeatherForecastUnit
+    let id: Int64?
+    let units: OpenWeatherUnit
     let count: Int
     
-    init(latitude: Double, longitude: Double, units: OpenWeatherForecastUnit, count: Int)
+    init(latitude: Double, longitude: Double, units: OpenWeatherUnit, count: Int)
     {
         self.latitude = latitude
         self.longitude = longitude
@@ -48,7 +40,7 @@ struct OpenWeatherForecastCriteria
         self.id = nil
     }
     
-    init(id: String, units: OpenWeatherForecastUnit, count: Int)
+    init(id: Int64, units: OpenWeatherUnit, count: Int)
     {
         latitude = Double.infinity
         longitude = Double.infinity
@@ -75,7 +67,7 @@ class OpenWeatherForecast: OpenWeatherOperationRequestor, OpenWeatherOperationPr
         }
         let parameters: [String: Any]
         if let id = searchCriteria.id {
-            parameters = ["id": id, "cnt": searchCriteria.count as NSNumber, "units": unit]
+            parameters = ["id": id as NSNumber, "cnt": searchCriteria.count as NSNumber, "units": unit]
         }
         else {
             parameters = [

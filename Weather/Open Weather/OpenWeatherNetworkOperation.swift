@@ -83,7 +83,7 @@ extension OpenWeatherOperation: URLSessionDataDelegate
             return
         }
         if let response = response as? HTTPURLResponse {
-            if !(response.statusCode ~= 200 ..< 300) {
+            if !(200 ..< 300).contains(response.statusCode) {
                 let invalidStatusProcessor = InvalidStatusProcessor(processor: processor)
                 processor = invalidStatusProcessor
             }

@@ -30,4 +30,12 @@ class OpenWeatherClient
         let networkOp = OpenWeatherOperation(processor: operation, requestor: operation)
         networkOperationQueue.addOperation(networkOp)
     }
+    
+    func retrieveHourlyForecast(searchCriteria: OpenWeatherHourlyForecastCriteria,
+        resultsProcessor: OpenWeatherHourlyForecastResultsProcessor)
+    {
+        let operation = OpenWeatherHourlyForecast(searchCriteria: searchCriteria, resultsHandler: resultsProcessor)
+        let networkOp = OpenWeatherOperation(processor: operation, requestor: operation)
+        networkOperationQueue.addOperation(networkOp)
+    }
 }
