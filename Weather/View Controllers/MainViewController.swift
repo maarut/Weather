@@ -1,5 +1,5 @@
 //
-//  ContainerViewController.swift
+//  MainViewController.swift
 //  Weather
 //
 //  Created by Maarut Chandegra on 19/07/2017.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContainerViewController: UIViewController
+class MainViewController: UIViewController
 {
     
     @IBOutlet weak var shareButton: UIBarButtonItem!
@@ -35,7 +35,7 @@ class ContainerViewController: UIViewController
 }
 
 // MARK: - UINavigationBarDelegate Implementation
-extension ContainerViewController: UINavigationBarDelegate
+extension MainViewController: UINavigationBarDelegate
 {
     func position(for bar: UIBarPositioning) -> UIBarPosition
     {

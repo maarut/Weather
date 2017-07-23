@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         dataController = DataController(withModelName: "OpenWeatherCache")
-        let rootVC = window?.rootViewController as? ContainerViewController
+        let rootVC = window?.rootViewController as? MainViewController
         rootVC?.dataController = dataController
         return true
     }
