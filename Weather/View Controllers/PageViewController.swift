@@ -135,6 +135,7 @@ extension PageViewController: NSFetchedResultsControllerDelegate
         case .insert:
             if let loc = anObject as? SavedLocation {
                 setViewControllers([createVC(withLocation: loc)], direction: .forward, animated: false, completion: nil)
+                deleteButton.isEnabled = true
             }
             break
         case .move, .update:
