@@ -40,6 +40,7 @@
 		E3563F6D1F1F8691004EA05C /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F6C1F1F8691004EA05C /* SearchViewController.swift */; };
 		E3563F6F1F1F895A004EA05C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3563F6E1F1F895A004EA05C /* MainViewController.swift */; };
 		E39B1F801F2545AB00203F6C /* User+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39B1F7F1F2545AB00203F6C /* User+Extensions.swift */; };
+		E3C9C16D1F262F77001FB768 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3C9C16C1F262F77001FB768 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +82,7 @@
 		E3563F6C1F1F8691004EA05C /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchViewController.swift; path = "View Controllers/SearchViewController.swift"; sourceTree = "<group>"; };
 		E3563F6E1F1F895A004EA05C /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainViewController.swift; path = "View Controllers/MainViewController.swift"; sourceTree = "<group>"; };
 		E39B1F7F1F2545AB00203F6C /* User+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "User+Extensions.swift"; path = "Cache/User+Extensions.swift"; sourceTree = "<group>"; };
+		E3C9C16C1F262F77001FB768 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = "View Controllers/SettingsViewController.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +170,7 @@
 				E3563F6E1F1F895A004EA05C /* MainViewController.swift */,
 				E302E3E01F23A7D7005D4B90 /* ForecastDetailsViewController.swift */,
 				E30B8D8F1F249C960089F7B7 /* LoginViewController.swift */,
+				E3C9C16C1F262F77001FB768 /* SettingsViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -304,6 +307,7 @@
 				E30B8D8E1F23D6EF0089F7B7 /* Wind.swift in Sources */,
 				E39B1F801F2545AB00203F6C /* User+Extensions.swift in Sources */,
 				E3563F581F1D5010004EA05C /* Weather.swift in Sources */,
+				E3C9C16D1F262F77001FB768 /* SettingsViewController.swift in Sources */,
 				E3563F6F1F1F895A004EA05C /* MainViewController.swift in Sources */,
 				E3563F611F1E4422004EA05C /* OpenWeatherCache.xcdatamodeld in Sources */,
 				E3563F6D1F1F8691004EA05C /* SearchViewController.swift in Sources */,

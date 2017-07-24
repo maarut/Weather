@@ -110,7 +110,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2541" y="121"/>
+            <point key="canvasLocation" x="2754" y="578"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="8eD-YR-ViL">
@@ -308,6 +308,172 @@
             </objects>
             <point key="canvasLocation" x="-51" y="120"/>
         </scene>
+        <!--Settings-->
+        <scene sceneID="G43-DG-M1b">
+            <objects>
+                <viewController title="Settings" id="QFu-8M-09Q" customClass="SettingsContainerViewController" customModule="Weather" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="joO-6c-7bX"/>
+                        <viewControllerLayoutGuide type="bottom" id="e5x-tC-N9q"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="oFS-D9-nXx">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xCN-tA-wrz">
+                                <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                                <items>
+                                    <navigationItem title="Settings" id="JGK-b2-ErE">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="YKJ-Cg-R6o">
+                                            <connections>
+                                                <action selector="cancel:" destination="QFu-8M-09Q" id="i9R-da-m4j"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="QII-6T-SVg">
+                                            <connections>
+                                                <action selector="done:" destination="QFu-8M-09Q" id="Nry-Be-wse"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                                <connections>
+                                    <outlet property="delegate" destination="QFu-8M-09Q" id="EQK-iW-Mru"/>
+                                </connections>
+                            </navigationBar>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="npv-LA-WkB">
+                                <rect key="frame" x="136" y="698" width="142" height="30"/>
+                                <state key="normal" title="Delete User Account">
+                                    <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteAccount:" destination="QFu-8M-09Q" eventType="touchUpInside" id="2a1-B8-gvo"/>
+                                </connections>
+                            </button>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xCC-BQ-hCH">
+                                <rect key="frame" x="0.0" y="64" width="414" height="626"/>
+                                <connections>
+                                    <segue destination="l8g-B3-nL2" kind="embed" identifier="embed" id="wIr-j0-xTK"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="e5x-tC-N9q" firstAttribute="top" secondItem="npv-LA-WkB" secondAttribute="bottom" constant="8" symbolic="YES" id="3PV-xm-XZ2"/>
+                            <constraint firstAttribute="trailing" secondItem="xCC-BQ-hCH" secondAttribute="trailing" id="FEV-Wf-Ubl"/>
+                            <constraint firstItem="xCC-BQ-hCH" firstAttribute="top" secondItem="xCN-tA-wrz" secondAttribute="bottom" id="NJ6-04-d8h"/>
+                            <constraint firstItem="xCN-tA-wrz" firstAttribute="top" secondItem="joO-6c-7bX" secondAttribute="bottom" id="Nc5-3o-erm"/>
+                            <constraint firstItem="npv-LA-WkB" firstAttribute="top" secondItem="xCC-BQ-hCH" secondAttribute="bottom" constant="8" symbolic="YES" id="RXB-lj-wOS"/>
+                            <constraint firstItem="xCN-tA-wrz" firstAttribute="leading" secondItem="oFS-D9-nXx" secondAttribute="leading" id="YhX-Qb-seK"/>
+                            <constraint firstAttribute="trailing" secondItem="xCN-tA-wrz" secondAttribute="trailing" id="uIh-vg-8c3"/>
+                            <constraint firstItem="npv-LA-WkB" firstAttribute="centerX" secondItem="oFS-D9-nXx" secondAttribute="centerX" id="vzo-Ik-P03"/>
+                            <constraint firstItem="xCC-BQ-hCH" firstAttribute="leading" secondItem="oFS-D9-nXx" secondAttribute="leading" id="z1I-uS-xjs"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZpG-uC-KDf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1940.5797101449277" y="-214.4021739130435"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="xnQ-IO-KKu">
+            <objects>
+                <tableViewController id="l8g-B3-nL2" customClass="SettingsViewController" customModule="Weather" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="bb9-Rf-aNT">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="626"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <sections>
+                            <tableViewSection id="j5Z-YO-f5M">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="ALS-Ve-LrL">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ALS-Ve-LrL" id="dBD-CZ-4iE">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="89D-8h-1aC">
+                                                    <rect key="frame" x="317" y="7.6666666666666661" width="89" height="29"/>
+                                                    <segments>
+                                                        <segment title="°C" width="44"/>
+                                                        <segment title="°F" width="44"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="unitsChanged:" destination="QFu-8M-09Q" eventType="valueChanged" id="5r1-Jj-Bvu"/>
+                                                        <action selector="unitsChanged:" destination="l8g-B3-nL2" eventType="valueChanged" id="LPl-NA-vSn"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Units" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vz0-uj-bAc">
+                                                    <rect key="frame" x="8" y="11" width="40" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="89D-8h-1aC" firstAttribute="centerY" secondItem="Vz0-uj-bAc" secondAttribute="centerY" id="Fyv-PE-tqT"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="89D-8h-1aC" secondAttribute="trailing" id="LF3-vm-Iyq"/>
+                                                <constraint firstItem="Vz0-uj-bAc" firstAttribute="centerY" secondItem="dBD-CZ-4iE" secondAttribute="centerY" id="LTc-Q4-h0P"/>
+                                                <constraint firstItem="Vz0-uj-bAc" firstAttribute="leading" secondItem="dBD-CZ-4iE" secondAttribute="leadingMargin" id="TVz-pg-494"/>
+                                                <constraint firstItem="89D-8h-1aC" firstAttribute="centerY" secondItem="dBD-CZ-4iE" secondAttribute="centerY" id="syH-TM-bz2"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="auZ-K3-jCD">
+                                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="auZ-K3-jCD" id="hWI-OO-rLy">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Forecast Count" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WZP-bd-uoM">
+                                                    <rect key="frame" x="8" y="12" width="118" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minimumValue="1" maximumValue="16" translatesAutoresizingMaskIntoConstraints="NO" id="N14-pp-rmd">
+                                                    <rect key="frame" x="312" y="8" width="94" height="29"/>
+                                                    <connections>
+                                                        <action selector="forecastCountChanged:" destination="l8g-B3-nL2" eventType="valueChanged" id="NUf-XK-ZZm"/>
+                                                        <action selector="forecastCountChanged:" destination="QFu-8M-09Q" eventType="valueChanged" id="rOW-Nn-lTc"/>
+                                                    </connections>
+                                                </stepper>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUC-rh-ATh">
+                                                    <rect key="frame" x="286" y="12" width="18" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="N14-pp-rmd" firstAttribute="leading" secondItem="rUC-rh-ATh" secondAttribute="trailing" constant="8" id="70t-v2-IKe"/>
+                                                <constraint firstItem="WZP-bd-uoM" firstAttribute="leading" secondItem="hWI-OO-rLy" secondAttribute="leadingMargin" id="AZn-OQ-KYr"/>
+                                                <constraint firstItem="WZP-bd-uoM" firstAttribute="centerY" secondItem="hWI-OO-rLy" secondAttribute="centerY" id="O38-h3-xcd"/>
+                                                <constraint firstItem="rUC-rh-ATh" firstAttribute="centerY" secondItem="hWI-OO-rLy" secondAttribute="centerY" id="kXU-f8-roa"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="N14-pp-rmd" secondAttribute="trailing" id="vHy-2r-KCv"/>
+                                                <constraint firstItem="N14-pp-rmd" firstAttribute="centerY" secondItem="hWI-OO-rLy" secondAttribute="centerY" id="yqT-r9-gew"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="l8g-B3-nL2" id="6Bo-P3-ozy"/>
+                            <outlet property="delegate" destination="l8g-B3-nL2" id="MP4-9y-4Jg"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="forecastCount" destination="rUC-rh-ATh" id="wJF-0Q-nP2"/>
+                        <outlet property="stepper" destination="N14-pp-rmd" id="6sI-aF-vgf"/>
+                        <outlet property="units" destination="89D-8h-1aC" id="i6c-m1-NXX"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5Dp-S7-doy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2699" y="-214"/>
+        </scene>
         <!--Main View Controller-->
         <scene sceneID="RwA-CL-LDf">
             <objects>
@@ -336,7 +502,11 @@
                                                 <action selector="logout:" destination="AIK-83-BPW" id="3ii-ap-AS9"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="Settings" id="BK4-ym-cQv"/>
+                                        <barButtonItem key="rightBarButtonItem" title="Settings" id="BK4-ym-cQv">
+                                            <connections>
+                                                <segue destination="QFu-8M-09Q" kind="show" identifier="settings" id="4Xy-D0-NTs"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                                 <connections>
@@ -470,7 +640,7 @@
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jmo-5Z-OL3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1783" y="121"/>
+            <point key="canvasLocation" x="1942" y="534"/>
         </scene>
         <!--Forecast Details View Controller-->
         <scene sceneID="Wba-R0-BL1">
@@ -729,7 +899,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Itk-te-C5e" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3489.8550724637685" y="120.24456521739131"/>
+            <point key="canvasLocation" x="3664" y="578"/>
         </scene>
     </scenes>
 </document>

@@ -106,6 +106,17 @@ class LoginViewController: UIViewController
 // MARK: - UITableViewDelegate Implementation
 extension LoginViewController: UITableViewDelegate
 {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    {
+        if indexPath.row == 0 {
+            let midY = tableView.frame.height / 2.0
+            switch tableviewState {
+            case .login: return midY - 44
+            case .create: return midY - 66
+            }
+        }
+        return tableviewState.identifiers()[indexPath.row].cellHeight()
+    }
 }
 
 // MARK: - UITableViewDataSource Implementation
@@ -133,18 +144,6 @@ extension LoginViewController: UITableViewDataSource
             (cell.viewWithTag(1) as? UITextField)?.delegate = self
         }
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
-    {
-        if indexPath.row == 0 {
-            let midY = tableView.frame.height / 2.0
-            switch tableviewState {
-            case .login: return midY - 44
-            case .create: return midY - 66
-            }
-        }
-        return tableviewState.identifiers()[indexPath.row].cellHeight()
     }
 }
 
@@ -220,13 +219,12 @@ private extension LoginViewController
             
         }
         else {
+            let user = User(userName: user!, password: password!, context: self.dataController.mainThreadContext)
             dataController.mainThreadContext.perform {
-                self.dataController.mainThreadContext.insert(
-                    User(userName: user!, password: password!, context: self.dataController.mainThreadContext)
-                )
+                self.dataController.mainThreadContext.insert(user)
                 self.dataController.save()
             }
-            performSegue(withIdentifier: "main", sender: self)
+            performSegue(withIdentifier: "main", sender: user)
         }
     }
     

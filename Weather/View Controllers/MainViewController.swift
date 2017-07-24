@@ -17,6 +17,14 @@ class MainViewController: UIViewController
     var dataController: DataController!
     var user: User!
 
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        if user.isDeleted || user.managedObjectContext == nil {
+            dismiss(animated: true, completion: nil)
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         switch segue.identifier ?? "" {
@@ -28,6 +36,10 @@ class MainViewController: UIViewController
             nextVC.user = user
         case "search":
             let nextVC = segue.destination as! SearchViewController
+            nextVC.dataController = dataController
+            nextVC.user = user
+        case "settings":
+            let nextVC = segue.destination as! SettingsContainerViewController
             nextVC.dataController = dataController
             nextVC.user = user
         default:

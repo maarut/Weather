@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Icon" representedClassName="Icon" syncable="YES" codeGenerationType="class">
         <attribute name="data" attributeType="Binary" allowsExternalBinaryDataStorage="YES" storedInTruthFile="YES" syncable="YES"/>
         <attribute name="id" attributeType="String" syncable="YES"/>
@@ -13,13 +13,15 @@
         <relationship name="user" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="savedLocations" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
+        <attribute name="forecastedCount" optional="YES" attributeType="Integer 32" defaultValueString="10" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="units" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="savedLocations" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="SavedLocation" inverseName="user" inverseEntity="SavedLocation" syncable="YES"/>
     </entity>
     <elements>
         <element name="Icon" positionX="-63" positionY="-18" width="128" height="75"/>
         <element name="SavedLocation" positionX="-54" positionY="9" width="128" height="135"/>
-        <element name="User" positionX="-54" positionY="36" width="128" height="90"/>
+        <element name="User" positionX="-54" positionY="36" width="128" height="120"/>
     </elements>
 </model>

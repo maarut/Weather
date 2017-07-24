@@ -49,7 +49,7 @@ class ForecastDetailsViewController: UITableViewController
 }
 
 
-// MARK: - UITableViewControllerDataSource Implementation
+// MARK: - UITableViewDataSource & UITableViewDelegate Implementation
 extension ForecastDetailsViewController
 {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
