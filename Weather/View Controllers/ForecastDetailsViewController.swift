@@ -37,6 +37,8 @@ class ForecastDetailsViewController: UITableViewController
             tableView.endUpdates()
         }
     }
+    var unitsText: String!
+    var convertCelciusToFahrenheit: ((Double) -> Double)!
     
     override func viewDidLoad()
     {
@@ -60,16 +62,16 @@ extension ForecastDetailsViewController
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .none
             let speed = data.windSpeed * 3600 * kphToMphFactor / 1000
-            let minTemp = data.temperatures.min
-            let maxTemp = data.temperatures.max
+            let minTemp = convertCelciusToFahrenheit(data.temperatures.min)
+            let maxTemp = convertCelciusToFahrenheit(data.temperatures.max)
             let pressure = data.pressure
             let humidity = data.humidity
             let windDirection = data.windDirection
             (cell.viewWithTag(1) as! UILabel).text = "\(data.weather.description)"
             (cell.viewWithTag(2) as! UILabel).text =
-                "\(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") °C"
+                "\(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") \(unitsText ?? "")"
             (cell.viewWithTag(3) as! UILabel).text =
-                "\(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") °C"
+                "\(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") \(unitsText ?? "")"
             (cell.viewWithTag(4) as! UILabel).text =
                 "\(numberFormatter.string(from: pressure as NSNumber) ?? "\(pressure)") mbar"
             (cell.viewWithTag(5) as! UILabel).text =
@@ -82,12 +84,14 @@ extension ForecastDetailsViewController
         case .hourly(let data):
             let cell = tableView.dequeueReusableCell(withIdentifier: "hourly")!
             let info = data[indexPath.row]
+            let minTemp = convertCelciusToFahrenheit(info.forecastDetails.minTemperature)
+            let maxTemp = convertCelciusToFahrenheit(info.forecastDetails.maxTemperature)
             (cell.viewWithTag(1) as! UILabel).text = dateFormatter.string(from: info.date)
             (cell.viewWithTag(2) as! UILabel).text = info.weatherDescription.description
             (cell.viewWithTag(3) as! UILabel).text =
-                numberFormatter.string(from: info.forecastDetails.minTemperature as NSNumber)! + " °C"
+                numberFormatter.string(from: minTemp as NSNumber)! + " \(unitsText ?? "")"
             (cell.viewWithTag(4) as! UILabel).text =
-                numberFormatter.string(from: info.forecastDetails.maxTemperature as NSNumber)! + " °C"
+                numberFormatter.string(from: maxTemp as NSNumber)! + " \(unitsText ?? "")"
             (cell.viewWithTag(5) as! UILabel).text =
                 numberFormatter.string(from: info.forecastDetails.humidity as NSNumber)! + "%"
             return cell

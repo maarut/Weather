@@ -61,9 +61,9 @@ class OpenWeatherForecast: OpenWeatherOperationRequestor, OpenWeatherOperationPr
     {
         let unit: String
         switch searchCriteria.units {
-        case .celcius:      unit = "metric"
-        case .fahrenheit:   unit = "imperial"
-        case .kelvin:       unit = ""
+        case .metric:   unit = "metric"
+        case .imperial: unit = "imperial"
+        case .kelvin:   unit = ""
         }
         let parameters: [String: Any]
         if let id = searchCriteria.id {

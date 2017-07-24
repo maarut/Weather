@@ -19,6 +19,7 @@ class ForecastViewController: UIViewController
     
     weak var shareButton: UIBarButtonItem!
     var location: SavedLocation?
+    var user: User!
     var dataController: DataController!
     fileprivate let speechSynthesiser = AVSpeechSynthesizer()
     fileprivate let locationManager = CLLocationManager()
@@ -27,7 +28,7 @@ class ForecastViewController: UIViewController
     fileprivate var dateFormatter: DateFormatter!
     fileprivate var selectedIndexPath: IndexPath?
     fileprivate weak var forecastDetailVC: ForecastDetailsViewController!
-    
+    fileprivate var unitsText: String!
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -35,21 +36,6 @@ class ForecastViewController: UIViewController
         dateFormatter.locale = Locale.current
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-        if let location = location {
-            let searchCriteria: OpenWeatherForecastCriteria
-            if let id = location.id {
-                searchCriteria = OpenWeatherForecastCriteria(id: Int64(id), units: .celcius, count: 10)
-            }
-            else {
-                searchCriteria = OpenWeatherForecastCriteria(latitude: location.latitude, longitude: location.longitude,
-                    units: .celcius, count: 10)
-            }
-            OpenWeatherClient.instance.retrieveForecast(searchCriteria: searchCriteria, resultsProcessor: self)
-        }
-        else {
-            checkLocationServices()
-            locationManager.startUpdatingLocation()
-        }
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -59,6 +45,31 @@ class ForecastViewController: UIViewController
         
         shareButton.target = self
         shareButton.action = #selector(share(_:))
+        
+        switch user.units {
+        case 0: unitsText = "°C"
+        case 1: unitsText = "°F"
+        default: unitsText = ""
+        }
+        forecastDetailVC.unitsText = unitsText
+        forecastDetailVC.tableView.reloadData()
+        
+        if let location = location {
+            let searchCriteria: OpenWeatherForecastCriteria
+            if let id = location.id {
+                searchCriteria = OpenWeatherForecastCriteria(id: Int64(id),
+                    units: .metric, count: Int(user.forecastedCount))
+            }
+            else {
+                searchCriteria = OpenWeatherForecastCriteria(latitude: location.latitude, longitude: location.longitude,
+                    units: .metric, count: Int(user.forecastedCount))
+            }
+            OpenWeatherClient.instance.retrieveForecast(searchCriteria: searchCriteria, resultsProcessor: self)
+        }
+        else {
+            checkLocationServices()
+            locationManager.startUpdatingLocation()
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool)
@@ -70,7 +81,10 @@ class ForecastViewController: UIViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
         switch segue.identifier ?? "" {
-        case "embed": forecastDetailVC = segue.destination as! ForecastDetailsViewController
+        case "embed":
+            forecastDetailVC = segue.destination as! ForecastDetailsViewController
+            forecastDetailVC.unitsText = unitsText
+            forecastDetailVC.convertCelciusToFahrenheit = convertCelciusToFahrenheit(temp:)
         default: return
         }
     }
@@ -86,7 +100,8 @@ extension ForecastViewController: CLLocationManagerDelegate
         if let location = locations.last {
             locationManager.stopUpdatingLocation()
             let searchCriteria = OpenWeatherForecastCriteria(latitude: location.coordinate.latitude,
-                longitude: location.coordinate.longitude, units: .celcius, count: 10)
+                longitude: location.coordinate.longitude,
+                units: .metric, count: Int(user.forecastedCount))
             OpenWeatherClient.instance.retrieveForecast(searchCriteria: searchCriteria, resultsProcessor: self)
         }
     }
@@ -151,8 +166,7 @@ extension ForecastViewController: UICollectionViewDelegate
             update(detailedForecast: detailedForecast)
         }
         else {
-            let criteria = OpenWeatherHourlyForecastCriteria(
-                id: "\(currentForecast.location.id)", units: .celcius)
+            let criteria = OpenWeatherHourlyForecastCriteria(id: "\(currentForecast.location.id)", units: .metric)
             OpenWeatherClient.instance.retrieveHourlyForecast(searchCriteria: criteria, resultsProcessor: self)
             setDetailWeatherData()
         }
@@ -375,16 +389,17 @@ private extension ForecastViewController
         let weatherInfo = currentForecast.weatherList[indexPath.row]
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .none
-        let minTemp = weatherInfo.temperatures.min
-        let maxTemp = weatherInfo.temperatures.max
+        
+        let minTemp = convertCelciusToFahrenheit(temp: weatherInfo.temperatures.min)
+        let maxTemp = convertCelciusToFahrenheit(temp: weatherInfo.temperatures.max)
         let humidity = weatherInfo.humidity
         let speed = weatherInfo.windSpeed * 3600 * kphToMphFactor / 1000
         let utterances = [AVSpeechUtterance(string: "Forecast for \(currentForecast.location.name) on \(date)."),
             AVSpeechUtterance(string: "Expect \(weatherInfo.weather.description)."),
             AVSpeechUtterance(string:
-                "Minimum Temperature is \(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") °C"),
+"Minimum Temperature is \(numberFormatter.string(from: minTemp as NSNumber) ?? "\(minTemp)") \(unitsText)"),
             AVSpeechUtterance(string:
-                "Maximum Temperature is \(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") °C"),
+"Maximum Temperature is \(numberFormatter.string(from: maxTemp as NSNumber) ?? "\(maxTemp)") \(unitsText)"),
             AVSpeechUtterance(string:
                 "Humidity is \(numberFormatter.string(from: humidity as NSNumber) ?? "\(humidity)")%"),
             AVSpeechUtterance(string:
@@ -400,6 +415,15 @@ private extension ForecastViewController
     {
         guard let indexPath = selectedIndexPath else { return }
         forecastDetailVC.state = .overview(currentForecast.weatherList[indexPath.row])
+    }
+    
+    func convertCelciusToFahrenheit(temp: Double) -> Double
+    {
+        switch user.units {
+        case 0: return temp
+        case 1: return temp * 9.0 / 5.0 + 32.0
+        default: return temp
+        }
     }
 }
 

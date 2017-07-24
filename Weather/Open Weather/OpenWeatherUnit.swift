@@ -8,17 +8,8 @@
 
 // MARK: - OpenWeatherUnit Enum
 enum OpenWeatherUnit
-{
-    init(number: Int)
-    {
-        switch number {
-        case 0:     self = .celcius
-        case 1:     self = .fahrenheit
-        default:    self = .kelvin
-        }
-    }
-    
+{   
     case kelvin
-    case celcius
-    case fahrenheit
+    case metric
+    case imperial
 }

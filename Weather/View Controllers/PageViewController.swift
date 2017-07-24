@@ -114,6 +114,7 @@ private extension PageViewController
         vc.location = location
         vc.shareButton = shareButton
         vc.dataController = dataController
+        vc.user = user
         return vc
     }
 }

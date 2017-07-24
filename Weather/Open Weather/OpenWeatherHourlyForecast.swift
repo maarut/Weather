@@ -30,7 +30,6 @@ struct OpenWeatherHourlyForecastCriteria
     {
         self.units = units
         self.id = id
-        
     }
 }
 
@@ -45,9 +44,9 @@ class OpenWeatherHourlyForecast: OpenWeatherOperationProcessor, OpenWeatherOpera
     {
         let unit: String
         switch searchCriteria.units {
-        case .celcius:      unit = "metric"
-        case .fahrenheit:   unit = "imperial"
-        case .kelvin:       unit = ""
+        case .metric:   unit = "metric"
+        case .imperial: unit = "imperial"
+        case .kelvin:   unit = ""
         }
         let parameters: [String: Any] = ["id": searchCriteria.id,
                                          "units": unit]
