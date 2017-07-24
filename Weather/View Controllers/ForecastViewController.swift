@@ -279,7 +279,7 @@ private extension ForecastViewController
             return "Today"
         }
         if includeDayOfMonth {
-            dateFormatter.dateFormat = "ccc dd"
+            dateFormatter.dateFormat = "ccc d"
             let dateString = dateFormatter.string(from: date)
             let dayOfWeek = Calendar.current.component(.day, from: date)
             switch dayOfWeek % 10 {

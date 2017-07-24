@@ -15,6 +15,7 @@ class MainViewController: UIViewController
     @IBOutlet weak var deleteButton: UIBarButtonItem!
     
     var dataController: DataController!
+    var user: User!
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
@@ -24,14 +25,20 @@ class MainViewController: UIViewController
             nextVC.shareButton = shareButton
             nextVC.deleteButton = deleteButton
             nextVC.dataController = dataController
+            nextVC.user = user
         case "search":
             let nextVC = segue.destination as! SearchViewController
             nextVC.dataController = dataController
+            nextVC.user = user
         default:
             break
         }
     }
 
+    @IBAction func logout(_ sender: UIBarButtonItem)
+    {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 // MARK: - UINavigationBarDelegate Implementation

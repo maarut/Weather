@@ -71,6 +71,18 @@ class DataController
         }
     }
     
+    func allUsers(context c: NSManagedObjectContext? = nil) -> [User]
+    {
+        let context = c ?? mainThreadContext
+        let request: NSFetchRequest<User> = User.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        let controller = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context,
+            sectionNameKeyPath: nil, cacheName: nil)
+        do { try controller.performFetch() }
+        catch let error as NSError { log(error: error, abort: true) }
+        return controller.fetchedObjects ?? []
+    }
+    
     func allIcons(context c: NSManagedObjectContext? = nil) -> NSFetchedResultsController<Icon>
     {
         let context = c ?? mainThreadContext
@@ -103,10 +115,12 @@ class DataController
         }
     }
     
-    func savedLocations(context c: NSManagedObjectContext? = nil) -> NSFetchedResultsController<SavedLocation>
+    func savedLocations(forUser user: User,
+        context c: NSManagedObjectContext? = nil) -> NSFetchedResultsController<SavedLocation>
     {
         let context = c ?? mainThreadContext
         let request: NSFetchRequest<SavedLocation> = SavedLocation.fetchRequest()
+        request.predicate = NSPredicate(format: "user == %@", user)
         request.sortDescriptors = [NSSortDescriptor(key: "dateAdded", ascending: true)]
         return NSFetchedResultsController(fetchRequest: request, managedObjectContext: context,
             sectionNameKeyPath: nil, cacheName: nil)

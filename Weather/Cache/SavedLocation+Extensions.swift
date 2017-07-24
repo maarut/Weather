@@ -10,10 +10,12 @@ import CoreData
 
 extension SavedLocation
 {
-    convenience init(id: NSNumber?, name: String, latitude: Double, longitude: Double, context: NSManagedObjectContext)
+    convenience init(user: User, id: NSNumber?, name: String, latitude: Double, longitude: Double,
+        context: NSManagedObjectContext)
     {
         self.init(entity: NSEntityDescription.entity(forEntityName: "SavedLocation", in: context)!,
             insertInto: context)
+        self.user = user
         self.id = id
         self.name = name
         self.latitude = latitude

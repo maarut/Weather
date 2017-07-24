@@ -12,6 +12,7 @@ import CoreData
 class PageViewController: UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource
 {
     var dataController: DataController!
+    var user: User!
     weak var shareButton: UIBarButtonItem!
     weak var deleteButton: UIBarButtonItem!
     
@@ -20,7 +21,7 @@ class PageViewController: UIPageViewController, UIPageViewControllerDelegate, UI
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        savedLocations = dataController.savedLocations()
+        savedLocations = dataController.savedLocations(forUser: user)
         savedLocations.delegate = self
         deleteButton.target = self
         deleteButton.action = #selector(deleteLocation)

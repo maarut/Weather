@@ -48,12 +48,6 @@ class ForecastDetailsViewController: UITableViewController
     }
 }
 
-// MARK: - UITableViewControllerDelegate Implementation
-extension ForecastDetailsViewController
-{
-
-}
-
 
 // MARK: - UITableViewControllerDataSource Implementation
 extension ForecastDetailsViewController
@@ -129,11 +123,14 @@ private extension ForecastDetailsViewController
         switch state {
         case .none:
             tableView.isScrollEnabled = false
+            tableView.separatorStyle = .none
         case .hourly(let data):
+            tableView.separatorStyle = .singleLine
             let indexPaths = (0 ..< data.count).map { IndexPath(row: $0, section: 0) }
             tableView.insertRows(at: indexPaths, with: UITableViewRowAnimation.fade)
             tableView.isScrollEnabled = true
         case .overview(_):
+            tableView.separatorStyle = .none
             tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: UITableViewRowAnimation.fade)
             tableView.isScrollEnabled = false
             

@@ -15,6 +15,7 @@ class SearchViewController: UIViewController
     @IBOutlet weak var map: MKMapView!
     @IBOutlet var tapGesture: UITapGestureRecognizer!
     var dataController: DataController!
+    var user: User!
     
     override func viewDidLoad()
     {
@@ -87,7 +88,7 @@ extension SearchViewController: MKMapViewDelegate
         calloutAccessoryControlTapped control: UIControl) {
         if let annotation = view.annotation {
             dataController.mainThreadContext.insert(
-                SavedLocation(id: nil, name: searchBar.text!, latitude: annotation.coordinate.latitude,
+                SavedLocation(user: user, id: nil, name: searchBar.text!, latitude: annotation.coordinate.latitude,
                     longitude: annotation.coordinate.longitude, context: dataController.mainThreadContext)
             )
             dataController.save()
