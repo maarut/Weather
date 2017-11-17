@@ -394,6 +394,7 @@ private extension ForecastViewController
         let maxTemp = convertCelciusToFahrenheit(temp: weatherInfo.temperatures.max)
         let humidity = weatherInfo.humidity
         let speed = weatherInfo.windSpeed * 3600 * kphToMphFactor / 1000
+        let unitsText = self.unitsText ?? ""
         let utterances = [AVSpeechUtterance(string: "Forecast for \(currentForecast.location.name) on \(date)."),
             AVSpeechUtterance(string: "Expect \(weatherInfo.weather.description)."),
             AVSpeechUtterance(string:

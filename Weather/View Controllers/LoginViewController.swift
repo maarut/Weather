@@ -83,13 +83,13 @@ class LoginViewController: UIViewController
             dest.user = sender as? User
             dest.transitioningDelegate = self
             dest.modalPresentationStyle = .custom
-            tableviewState = .login
             let indexPaths = (0 ..< tableviewState.identifiers().count).map( { IndexPath(row: $0, section: 0) })
             let textFields = indexPaths.flatMap( { tableView.cellForRow(at: $0)?.viewWithTag(1) as? UITextField } )
             for textField in textFields {
                 textField.text = nil
                 textField.resignFirstResponder()
             }
+            tableviewState = .login
         default:
             break
         }
